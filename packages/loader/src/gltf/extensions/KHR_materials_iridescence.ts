@@ -17,9 +17,16 @@ class KHR_materials_iridescence extends GLTFExtensionParser {
       iridescenceThicknessTexture
     } = schema;
 
-    material.iridescence = iridescenceFactor;
-    material.iridescenceIOR = iridescenceIor;
-    material.iridescenceThicknessRange.set(iridescenceThicknessMinimum, iridescenceThicknessMaximum);
+    const shaderData = material.shaderData;
+    const info = shaderData.getVector4("material_IridescenceInfo");
+    info.x = iridescenceFactor;
+    info.y = iridescenceIor;
+    info.z = iridescenceThicknessMinimum;
+    info.w = iridescenceThicknessMaximum;
+
+    // material.iridescence = iridescenceFactor;
+    // material.iridescenceIOR = iridescenceIor;
+    // material.iridescenceThicknessRange.set(iridescenceThicknessMinimum, iridescenceThicknessMaximum);
 
     if (iridescenceTexture) {
       GLTFMaterialParser._checkOtherTextureTransform(iridescenceTexture, "Iridescence texture");

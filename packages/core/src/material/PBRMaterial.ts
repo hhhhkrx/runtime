@@ -214,13 +214,20 @@ export class PBRMaterial extends PBRBaseMaterial {
    *  @defaultValue `[100, 400]`
    */
   get iridescenceThicknessRange(): Vector2 {
-    return this._iridescenceRange;
+    // TODO: gc.
+    const info = this.shaderData.getVector4(PBRMaterial._iridescenceInfoProp);
+    return new Vector2(info.w, info.z);
+    // return this._iridescenceRange;
   }
 
   set iridescenceThicknessRange(value: Vector2) {
-    if (this._iridescenceRange !== value) {
-      this._iridescenceRange.copyFrom(value);
-    }
+    // debugger;
+    // if (this._iridescenceRange !== value) {
+    //   this._iridescenceRange.copyFrom(value);
+    // }
+    const iridescenceInfo = this.shaderData.getVector4(PBRMaterial._iridescenceInfoProp);
+    iridescenceInfo.z = value.x;
+    iridescenceInfo.w = value.y;
   }
 
   /**
@@ -474,9 +481,9 @@ export class PBRMaterial extends PBRBaseMaterial {
     shaderData.setColor(PBRMaterial._attenuationColorProp, attenuationColor);
 
     // @ts-ignore
-    this._iridescenceRange._onValueChanged = this._onIridescenceRangeChanged.bind(this);
+    // this._iridescenceRange._onValueChanged = this._onIridescenceRangeChanged.bind(this);
     // @ts-ignore
-    sheenColor._onValueChanged = this._onSheenColorChanged.bind(this);
+    // sheenColor._onValueChanged = this._onSheenColorChanged.bind(this);
   }
 
   /**
@@ -491,22 +498,23 @@ export class PBRMaterial extends PBRBaseMaterial {
     return dest;
   }
 
-  private _onIridescenceRangeChanged(): void {
-    const iridescenceInfo = this.shaderData.getVector4(PBRMaterial._iridescenceInfoProp);
-    iridescenceInfo.z = this._iridescenceRange.x;
-    iridescenceInfo.w = this._iridescenceRange.y;
-  }
+  // private _onIridescenceRangeChanged(): void {
+  //   debugger;
+  //   const iridescenceInfo = this.shaderData.getVector4(PBRMaterial._iridescenceInfoProp);
+  //   iridescenceInfo.z = this._iridescenceRange.x;
+  //   iridescenceInfo.w = this._iridescenceRange.y;
+  // }
 
-  private _onSheenColorChanged(): void {
-    const sheenColor = this.sheenColor;
-    const enableSheen = sheenColor.r + sheenColor.g + sheenColor.b > 0;
-    if (enableSheen !== this._sheenEnabled) {
-      this._sheenEnabled = enableSheen;
-      if (enableSheen) {
-        this.shaderData.enableMacro("MATERIAL_ENABLE_SHEEN");
-      } else {
-        this.shaderData.disableMacro("MATERIAL_ENABLE_SHEEN");
-      }
-    }
-  }
+  // private _onSheenColorChanged(): void {
+  //   const sheenColor = this.sheenColor;
+  //   const enableSheen = sheenColor.r + sheenColor.g + sheenColor.b > 0;
+  //   if (enableSheen !== this._sheenEnabled) {
+  //     this._sheenEnabled = enableSheen;
+  //     if (enableSheen) {
+  //       this.shaderData.enableMacro("MATERIAL_ENABLE_SHEEN");
+  //     } else {
+  //       this.shaderData.disableMacro("MATERIAL_ENABLE_SHEEN");
+  //     }
+  //   }
+  // }
 }
